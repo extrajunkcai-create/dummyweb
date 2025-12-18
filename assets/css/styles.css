@@ -1,0 +1,107 @@
+/* ---------------- PONG CONTAINER ---------------- */
+.pong-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem; /* fixed typo (removed stray /) */
+}
+
+/* ---------------- PONG WRAPPER ---------------- */
+.pong-wrapper {
+  width: 90vw;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+  margin: 2rem auto;
+  position: relative;
+  overflow: hidden;
+  background: #000; /* solid dark fallback */
+  border: 2px solid white; /* visible game window border */
+  box-sizing: border-box;
+}
+
+/* ---------------- DARK OVERLAY ---------------- */
+.pong-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0); /* start transparent */
+  transition: background 0.8s ease;
+  z-index: 1;
+}
+
+.pong-wrapper.active .pong-overlay {
+  background: rgba(0, 0, 0, 0.2); /* semi-transparent overlay so game is visible */
+}
+
+/* ---------------- GAME CONTAINER ---------------- */
+.game-container {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.8); /* visible dark game window */
+  border: 2px solid white;
+  box-sizing: border-box;
+}
+
+/* ---------------- BALL & PADDLES ---------------- */
+.ball {
+  position: absolute;
+  width: 2%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: yellow; /* more visible */
+  z-index: 3;
+}
+
+.paddle {
+  position: absolute;
+  width: 2%;
+  height: 15%;
+  background: red; /* more visible */
+  z-index: 3;
+}
+
+.left-paddle { left: 2%; }
+.right-paddle { right: 2%; }
+
+/* ---------------- SCOREBOARD ---------------- */
+.score-board {
+  position: absolute;
+  top: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10%;
+  color: white;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  z-index: 4;
+}
+
+/* ---------------- RESTART BUTTON ---------------- */
+#restartButton {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+  z-index: 5;
+}
+
+#restartButton:hover {
+  background: #eee;
+}
+
+/* ---------------- WINNER MESSAGE ---------------- */
+.winner-message {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  color: yellow;
+  font-size: 2rem;
+  z-index: 6;
+}

@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Dummy'sWeb</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+    <style>
+        /* PONG CSS  */
+        .pong-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .pong-wrapper {
+            width: 100%;
+            height: 0;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            border: 2px solid white;
+            box-sizing: border-box;
+        }
+
+        .pong-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .game-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .ball {
+            position: absolute;
+            width: 2%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: yellow;
+            z-index: 3;
+        }
+
+        .paddle {
+            position: absolute;
+            width: 2%;
+            height: 15%;
+            background: white;
+            z-index: 3;
+        }
+
+        .left-paddle { left: 2%; }
+        .right-paddle { right: 2%; }
+
+        .score-board {
+            position: absolute;
+            top: 3%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10%;
+            color: white;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            z-index: 4;
+        }
+
+        #startButton, #restartButton {
+            display: block;
+            margin: 1rem auto;
+            padding: 0.5rem 1rem;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+            z-index: 5;
+        }
+
+        #startButton:hover, #restartButton:hover { background: #eee; }
+
+        #restartButton { display: none; }
+
+        .winner-message {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            z-index: 6;
+        }
+    </style>
+</head>
+
+<body class="is-preload">
+<div id="wrapper">
+
+    <header id="header">
+        <div class="logo"><i class="fa fa-sun fa-3x"></i></div>
+        <div class="content">
+            <div class="inner">
+                <h1>Aetherius</h1>
+                <p>A fully responsive site template designed by <a href="https://html5up.net">HTML5 UP</a>.</p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#pong">Pong</a></li>
+                <li><a href="#Chucklez">Chucklez</a></li>
+                <li><a href="#apocrypha">Mingus</a></li>
+                <li><a href="#wiki">MoarCat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="main">
+
+        <article id="pong">
+            <h2 class="major">Pong</h2>
+            <div class="pong-container">
+                <div class="pong-wrapper" id="pongWrapper">
+                    <div class="pong-overlay"></div>
+                    <div class="game-container">
+                        <div class="score-board">
+                            <div id="leftscore">0</div>
+                            <div id="rightscore">0</div>
+                        </div>
+                        <div class="ball" id="ball"></div>
+                        <div class="paddle left-paddle" id="leftpaddle"></div>
+                        <div class="paddle right-paddle" id="rightpaddle"></div>
+                        <div class="winner-message" id="winnermessage"></div>
+                    </div>
+                </div>
+                <button id="startButton">Press Start</button>
+                <button id="restartButton">Restart</button>
+            </div>
+        </article>
+
+        <article id="Chucklez">
+            <h2 class="major">ChucklezMingus</h2>
+            <span class="image main"><img src="images/chucklezCat1.jpg" alt="" /></span>
+            <p>Hehe, Mushroom Cat</p>
+        </article>
+
+        <article id="apocrypha">
+            <h2 class="major">Mingus</h2>
+            <span class="image main"><img src="images/mingus1.jpg" alt="" /></span>
+            <p>hehe,mingus</p>
+        </article>
+
+        <article id="wiki">
+            <h2 class="major">Moar Cat</h2>
+            <span class="image main"><img src="images/chucklezCat2.jpg" alt="" /></span>
+            <p>hehe more cat</p>
+        </article>
+
+    </div>
+
+    <footer id="footer">
+        <p>&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+    </footer>
+
+</div>
+
+<div id="bg"></div>
+
+<!-- PONG JS -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    const ball = document.getElementById("ball");
+    const leftPaddle = document.getElementById("leftpaddle");
+    const rightPaddle = document.getElementById("rightpaddle");
+    const leftScoreEl = document.getElementById("leftscore");
+    const rightScoreEl = document.getElementById("rightscore");
+    const startButton = document.getElementById("startButton");
+    const restartButton = document.getElementById("restartButton");
+    const winnermessage = document.getElementById("winnermessage");
+
+    let leftScore = 0, rightScore = 0;
+    let ballX = 0.5, ballY = 0.5;
+    let ballVX = 0.5, ballVY = 0.3;
+    let leftPaddleY = 0.4, rightPaddleY = 0.4;
+
+    let gamePaused = true;
+
+    const ballSize = 0.02, paddleHeight = 0.15, paddleWidth = 0.02;
+    const paddleSpeed = 0.8;
+    let lastTime = performance.now();
+
+    function clamp(value, min, max){ return Math.max(min, Math.min(max, value)); }
+
+    function resetBall(direction=1){
+        ballX=0.5; ballY=0.5;
+        const angle=(Math.random()-0.5)*0.6;
+        ballVX=direction*0.6; ballVY=angle;
+        winnermessage.textContent = "";
+    }
+
+    function updateDOM(){
+        ball.style.left=`${ballX*100}%`;
+        ball.style.top=`${ballY*100}%`;
+        leftPaddle.style.top=`${leftPaddleY*100}%`;
+        rightPaddle.style.top=`${rightPaddleY*100}%`;
+    }
+
+    const keys = {};
+    window.addEventListener("keydown", e => keys[e.key] = true);
+    window.addEventListener("keyup", e => keys[e.key] = false);
+
+    function loop(time){
+        if(!gamePaused){
+            const delta = (time - lastTime) / 1000;
+            lastTime = time;
+
+            if(keys["w"]) leftPaddleY -= paddleSpeed*delta;
+            if(keys["s"]) leftPaddleY += paddleSpeed*delta;
+            if(keys["ArrowUp"]) rightPaddleY -= paddleSpeed*delta;
+            if(keys["ArrowDown"]) rightPaddleY += paddleSpeed*delta;
+
+            leftPaddleY = clamp(leftPaddleY, 0, 1-paddleHeight);
+            rightPaddleY = clamp(rightPaddleY, 0, 1-paddleHeight);
+
+            ballX += ballVX*delta;
+            ballY += ballVY*delta;
+
+            if(ballY <= 0 || ballY >= 1-ballSize) ballVY *= -1;
+
+            if(ballX <= paddleWidth && ballY+ballSize >= leftPaddleY && ballY <= leftPaddleY+paddleHeight){
+                ballVX = Math.abs(ballVX);
+                ballX = paddleWidth;
+            }
+
+            if(ballX+ballSize >= 1-paddleWidth && ballY+ballSize >= rightPaddleY && ballY <= rightPaddleY+paddleHeight){
+                ballVX = -Math.abs(ballVX);
+                ballX = 1-paddleWidth-ballSize;
+            }
+
+            if(ballX < -0.1){
+                rightScore++;
+                rightScoreEl.textContent = rightScore;
+                resetBall(1);
+            }
+
+            if(ballX > 1.1){
+                leftScore++;
+                leftScoreEl.textContent = leftScore;
+                resetBall(-1);
+            }
+
+            updateDOM();
+        }
+        requestAnimationFrame(loop);
+    }
+
+    startButton.addEventListener("click", () => {
+        gamePaused = false;
+        startButton.style.display = "none";
+        restartButton.style.display = "block";
+    });
+
+    restartButton.addEventListener("click", () => {
+        leftScore = 0; rightScore = 0;
+        leftScoreEl.textContent = "0"; rightScoreEl.textContent = "0";
+        resetBall(Math.random() > 0.5 ? 1 : -1);
+        gamePaused = true;
+        startButton.style.display = "block";
+        restartButton.style.display = "none";
+    });
+
+    resetBall(Math.random() > 0.5 ? 1 : -1);
+    updateDOM();
+    requestAnimationFrame(loop);
+});
+</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
